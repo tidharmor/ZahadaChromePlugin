@@ -4,17 +4,13 @@
   "name": "Zahada",
   "description": "This extension is for Zahada",
   "version": "1.0",
-  "background" : {
-    "scripts": ["js/background.js"],
-    "persistent": false
-  },
-  "page_action": {
-    "default_icon": "images/icon.png",
+  "browser_action": {
+    "default_icon": "images/zahada.png",
     "default_popup": "html/popup.html"
   },
   "permissions": [
-	"declarativeContent",
     "activeTab",
-    "http://www.mcgov.co.uk/"
+    "http://www.mcgov.co.uk/",
+	"storage"
   ]
 }

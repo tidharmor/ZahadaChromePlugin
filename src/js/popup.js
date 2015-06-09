@@ -13,7 +13,11 @@ function submitAnswer() {
     var answer = document.getElementById('answer_text').value;
 
     renderStatus('Submitting ' + answer + '...');
-    
+
+    openAnswerUrl(answer);
+}
+
+function openAnswerUrl(answer) {
     var newUrl = baseUrl + answer + '.html';
             
 
@@ -31,11 +35,17 @@ function submitAnswer() {
 
             renderStatus('Right answer');
 
+            // Save it using the Chrome extension storage API.
+            chrome.storage.sync.set({ 'answer': answer }, function () {
+                // Notify that we saved.
+                renderStatus('Progress saved');
+            });
+
             chrome.tabs.update(null, { url: newUrl });
 
-            renderStatus('Give it a try:');
-
         }
+
+        document.getElementById('answer_text').focus();
 
     };
     x.onerror = function () {
@@ -51,13 +61,30 @@ function text_keypress(e) {
 
 var baseUrl = 'http://www.mcgov.co.uk/riddles/';
 
+function restoreProgress() {
+
+    chrome.storage.sync.get('answer', function (items) {
+        
+        for (key in items) {
+            if (key == 'answer') {
+                var newUrl = baseUrl + items[key] + '.html';
+                chrome.tabs.create({ 'url': newUrl}, function (tab) {
+                    
+                });
+            }
+        }
+
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
     renderStatus('Give it a try:');
     document.getElementById('answer_text').addEventListener('keypress', text_keypress);
     document.getElementById('submit_button').addEventListener('click', submitAnswer);
+    document.getElementById('restore_button').addEventListener('click', restoreProgress);
 
-  
+    document.getElementById('answer_text').focus();
 });
 
 
